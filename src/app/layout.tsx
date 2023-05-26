@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 import { Inter } from "next/font/google";
 import { twMerge } from "tailwind-merge";
+import TopNavigation from "./_components/navigation/top-navigation";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,9 +24,10 @@ export default function RootLayout({
       <body
         className={twMerge(
           "bg-background font-sans text-foreground",
-          inter.variable,
+          inter.variable
         )}
       >
+        <TopNavigation />
         {children}
       </body>
     </html>
