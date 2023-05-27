@@ -1,14 +1,10 @@
-import Link from "next/link";
 import { getServerAuthSession } from "~/server/auth";
 import { api } from "~/trpc/server";
 
-import Image from "next/image";
-import { ScrollArea } from "~/ui/scroll-area";
 import { Repositories } from "./_components/dashboard/repositories";
 import { Suspense } from "react";
 import { LoadingPage } from "~/components/loading";
-
-import AddRepositories from "~/components/add-repositories";
+import RepositoryList from "~/components/repository-list";
 
 export default async function Home() {
   const session = await getServerAuthSession();
@@ -43,43 +39,7 @@ export default async function Home() {
             </Suspense>
           </div>
 
-          <ScrollArea className="flex h-[420px] w-[25%] flex-col gap-4 rounded-md border border-[#444c56] bg-[#22272e] p-4 text-white">
-            {repositoryGroups.map((group, i) => (
-              <div className="mb-4 flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <Image
-                    src={group.ownerAvatar}
-                    alt={group.owner}
-                    width={20}
-                    height={20}
-                    className="rounded"
-                    style={{ height: 20 }}
-                  />
-
-                  <h3 className="text-2xl font-bold text-[#adbac7]">
-                    {group.owner}
-                  </h3>
-                </div>
-
-                <div className="flex flex-col">
-                  {group.repositories.map((repository, i) => (
-                    <div className="flex gap-2">
-                      <AddRepositories repository={repository} />
-
-                      <Link
-                        key={i}
-                        href={repository.html_url}
-                        target="_blank"
-                        className="text-xl font-semibold"
-                      >
-                        {repository.name}
-                      </Link>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </ScrollArea>
+          <RepositoryList groups={repositoryGroups} />
         </div>
       </div>
     </main>

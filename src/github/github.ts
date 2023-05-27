@@ -129,6 +129,8 @@ async function fetchRepositories(
   });
 
   return Promise.all(promises).then((values) => {
+    const uniqueRepos = new Set<string>();
+
     const groups = new Map<
       string,
       { avatar: string; repos: GithubRepository[] }
@@ -140,9 +142,13 @@ async function fetchRepositories(
       repos.forEach((repo) => {
         const ownerLogin = repo.owner.login;
         const ownerAvatar = repo.owner.avatar_url;
+
+        if (uniqueRepos.has(`${ownerLogin}/${repo.name}`)) {
+          return;
+        }
+
         if (!groups.has(ownerLogin)) {
           groups.set(ownerLogin, { avatar: ownerAvatar, repos: [] });
-        } else {
         }
 
         const items = groups.get(ownerLogin)?.repos;
@@ -150,37 +156,11 @@ async function fetchRepositories(
         if (!items?.some((item) => item.id === repo.id)) {
           groups.get(ownerLogin)?.repos.push(repo);
         }
-      });
 
-      groups.forEach((value, key) => {
-        collectedRepos.push({
-          owner: key,
-          ownerAvatar: value.avatar,
-          repositories: value.repos,
-        });
+        uniqueRepos.add(`${ownerLogin}/${repo.name}`);
       });
     });
 
-    return collectedRepos;
-  });
-
-  /* return userRepos.then((repos) => {
-    // group by repo owner
-    const groups = new Map<
-      string,
-      { avatar: string; repos: GithubRepository[] }
-    >();
-
-    repos.forEach((repo) => {
-      const ownerLogin = repo.owner.login;
-      const ownerAvatar = repo.owner.avatar_url;
-      if (!groups.has(ownerLogin)) {
-        groups.set(ownerLogin, { avatar: ownerAvatar, repos: [] });
-      }
-      groups.get(ownerLogin)?.repos.push(repo);
-    });
-
-    const collectedRepos: Repository[] = [];
     groups.forEach((value, key) => {
       collectedRepos.push({
         owner: key,
@@ -190,7 +170,7 @@ async function fetchRepositories(
     });
 
     return collectedRepos;
-  }); */
+  });
 }
 
 function fetchConfig(accessToken: string) {
