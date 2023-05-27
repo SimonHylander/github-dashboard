@@ -57,6 +57,7 @@ export type GithubRepository = {
   name: string;
   full_name: string;
   private: boolean;
+  html_url: string;
   owner: {
     login: string;
     id: number;
@@ -79,35 +80,27 @@ export type GithubRepository = {
   };
 };
 
-type Repository = {
-  organization: string;
-  name: string;
+export type Repository = {
+  owner: string;
+  ownerAvatar: string;
+  repositories: GithubRepository[];
 };
 
-export async function getRepositories(userId: string) {
-  const account = await prisma.account.findFirst({
-    where: {
-      userId,
-    },
-  });
+export async function getUser(accessToken: string) {
+  const user = await fetch(
+    `https://api.github.com/user`,
+    fetchConfig(accessToken)
+  ).then((res) => res.json() as Promise<GithubUser>);
 
-  if (account && account.access_token) {
-    const user = await fetch(
-      `https://api.github.com/user`,
-      fetchConfig(account.access_token)
-    ).then((res) => res.json() as Promise<GithubUser>);
-
-    if (user) {
-      const orgs = await getOrganizations(user, account.access_token);
-
-      return await fetchRepositories(orgs, account.access_token);
-    }
-  }
-
-  return [];
+  return user;
 }
 
-async function getOrganizations(user: GithubUser, accessToken: string) {
+export async function getRepositories(accessToken: string) {
+  const orgs = await getOrganizations(accessToken);
+  return await fetchRepositories(orgs, accessToken);
+}
+
+async function getOrganizations(accessToken: string) {
   return await fetch(
     `https://api.github.com/user/orgs`,
     fetchConfig(accessToken)
@@ -118,30 +111,86 @@ async function fetchRepositories(
   orgs: GitHubOrganization[],
   accessToken: string
 ) {
-  const allRepos: Repository[] = [];
-
   const userRepos = fetch(
     `https://api.github.com/user/repos`,
     fetchConfig(accessToken)
-  ).then((res) => res.json() as Promise<GithubRepository[]>);
+  )
+    .then((res) => res.json() as Promise<GithubRepository[]>)
+    .catch((err) => []);
 
-  return Promise.all([userRepos]).then((repos) => {
-    return repos[0];
+  const promises: Promise<GithubRepository[]>[] = [userRepos];
+
+  orgs.forEach((org) => {
+    promises.push(
+      fetch(org.repos_url, fetchConfig(accessToken))
+        .then((res) => res.json() as Promise<GithubRepository[]>)
+        .catch((err) => [])
+    );
   });
 
-  /* for (const org of orgs) {
-    const repos = await fetch(org.repos_url, fetchConfig(accessToken)).then(
-      (res) => res.json() as Promise<{ name: string }[]>
-    );
+  return Promise.all(promises).then((values) => {
+    const groups = new Map<
+      string,
+      { avatar: string; repos: GithubRepository[] }
+    >();
 
-    if (repos && repos.length > 0) {
-      const orgRepos = repos.map((repo) => ({
-        organization: org.login,
-        name: repo.name,
-      }));
-      allRepos.push(...orgRepos);
-    }
-  } */
+    const collectedRepos: Repository[] = [];
+
+    values.forEach((repos) => {
+      repos.forEach((repo) => {
+        const ownerLogin = repo.owner.login;
+        const ownerAvatar = repo.owner.avatar_url;
+        if (!groups.has(ownerLogin)) {
+          groups.set(ownerLogin, { avatar: ownerAvatar, repos: [] });
+        } else {
+        }
+
+        const items = groups.get(ownerLogin)?.repos;
+
+        if (!items?.some((item) => item.id === repo.id)) {
+          groups.get(ownerLogin)?.repos.push(repo);
+        }
+      });
+
+      groups.forEach((value, key) => {
+        collectedRepos.push({
+          owner: key,
+          ownerAvatar: value.avatar,
+          repositories: value.repos,
+        });
+      });
+    });
+
+    return collectedRepos;
+  });
+
+  /* return userRepos.then((repos) => {
+    // group by repo owner
+    const groups = new Map<
+      string,
+      { avatar: string; repos: GithubRepository[] }
+    >();
+
+    repos.forEach((repo) => {
+      const ownerLogin = repo.owner.login;
+      const ownerAvatar = repo.owner.avatar_url;
+      if (!groups.has(ownerLogin)) {
+        groups.set(ownerLogin, { avatar: ownerAvatar, repos: [] });
+      }
+      groups.get(ownerLogin)?.repos.push(repo);
+    });
+
+    const collectedRepos: Repository[] = [];
+    groups.forEach((value, key) => {
+      collectedRepos.push({
+        owner: key,
+        ownerAvatar: value.avatar,
+        repositories: value.repos,
+      });
+    });
+
+    return collectedRepos;
+  }); */
 }
 
 function fetchConfig(accessToken: string) {

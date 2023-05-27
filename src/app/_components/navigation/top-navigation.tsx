@@ -1,4 +1,9 @@
-function TopNavigation() {
+import Link from "next/link";
+import { getServerAuthSession } from "~/server/auth";
+
+async function TopNavigation() {
+  const session = await getServerAuthSession();
+
   return (
     <nav className="bg-[#2d333b]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -46,6 +51,7 @@ function TopNavigation() {
               </div>
             </div>
           </div>
+
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
               <button
@@ -69,22 +75,32 @@ function TopNavigation() {
 
               <div className="relative ml-3">
                 <div>
-                  <button
-                    className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                    id="user-menu"
-                    aria-haspopup="true"
-                  >
-                    <span className="sr-only">Open user menu</span>
-                    <img
-                      className="h-8 w-8 rounded-full"
-                      src="https://avatars.githubusercontent.com/u/1?v=4"
-                      alt=""
-                    />
-                  </button>
+                  {session?.user ? (
+                    <button
+                      className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                      id="user-menu"
+                      aria-haspopup="true"
+                    >
+                      <span className="sr-only">Open user menu</span>
+                      <img
+                        className="h-8 w-8 rounded-full"
+                        src="https://avatars.githubusercontent.com/u/1?v=4"
+                        alt=""
+                      />
+                    </button>
+                  ) : (
+                    <Link
+                      href={session ? "/api/auth/signout" : "/api/auth/signin"}
+                      className="ml-auto flex-shrink-0 rounded-full border-2 border-transparent p-1 text-gray-400 hover:text-white  focus:outline-none"
+                    >
+                      Sign in
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
           </div>
+
           <div className="-mr-2 flex md:hidden">
             <button
               className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -151,6 +167,7 @@ function TopNavigation() {
             Issues
           </a>
         </div>
+
         <div className="border-t border-gray-700 pb-3 pt-4">
           <div className="flex items-center px-5">
             <div className="flex-shrink-0">
@@ -162,31 +179,39 @@ function TopNavigation() {
             </div>
             <div className="ml-3">
               <div className="text-base font-medium leading-none text-white">
-                Tom Smith
+                {session?.user.name}
               </div>
               <div className="text-sm font-medium leading-none text-gray-400">
-                tom@example.com
+                {session?.user.email}
               </div>
             </div>
-            <button
-              className="ml-auto flex-shrink-0 rounded-full border-2 border-transparent bg-gray-800 p-1 text-gray-400 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
-              aria-label="Notifications"
-            >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+
+            {session?.user ? (
+              <button aria-label="Notifications">
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 15h.01M12 6h.01M12 10h.01M12 14h.01M12 18h.01M6 18h2M6 21h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+              </button>
+            ) : (
+              <Link
+                href={session ? "/api/auth/signout" : "/api/auth/signin"}
+                className="ml-auto flex-shrink-0 rounded-full border-2 border-transparent bg-gray-800 p-1 text-gray-400 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 15h.01M12 6h.01M12 10h.01M12 14h.01M12 18h.01M6 18h2M6 21h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-            </button>
+                Sign in
+              </Link>
+            )}
           </div>
+
           <div className="mt-3 space-y-1 px-2">
             <a
               href="#"

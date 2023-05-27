@@ -1,37 +1,44 @@
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  publicProcedure,
-  protectedProcedure,
-} from "~/server/api/trpc";
+
+import { Repository, getRepositories, getUser } from "~/github/github";
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const createPost = protectedProcedure
-  .input(z.object({ text: z.string().min(1) }))
+  .input(z.object({ repositoryId: z.number() }))
   .mutation(async ({ ctx, input }) => {
-    // simulate a slow db call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     return ctx.prisma.post.create({
       data: {
-        text: input.text,
+        repositoryId: input.repositoryId,
+        order: 0,
         createdBy: { connect: { id: ctx.session.user.id } },
       },
     });
   });
 
 export const postRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
+  repositories: protectedProcedure.query(async ({ ctx, input }) => {
+    let repositoryGroups: Repository[] = [];
+
+    const userId = ctx.session.user.id;
+
+    const account = await ctx.prisma.account.findFirst({
+      where: {
+        userId,
+      },
+    });
+
+    if (account && account.access_token) {
+      // const githubUser = await getUser(account.access_token);
+      repositoryGroups = await getRepositories(account.access_token);
+    }
+
+    return repositoryGroups;
+  }),
 
   create: createPost,
 
-  getLatest: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.post.findFirst({
+  list: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.post.findMany({
       orderBy: { createdAt: "desc" },
       where: { createdBy: { id: ctx.session.user.id } },
     });
