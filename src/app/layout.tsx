@@ -1,6 +1,7 @@
 import "~/styles/globals.css";
 import { Inter } from "next/font/google";
 import { twMerge } from "tailwind-merge";
+
 import TopNavigation from "./_components/navigation/top-navigation";
 
 const inter = Inter({
@@ -27,6 +28,7 @@ export default function RootLayout({
           inter.variable
         )}
       >
+        {/* @ts-expect-error - Async Server Component */}
         <TopNavigation />
         {children}
       </body>

@@ -11,7 +11,7 @@ export default async function Home() {
 
   if (!session) {
     return (
-      <div className="flex min-h-screen flex-col items-center gap-2 bg-[#1c2128]"></div>
+      <div className="flex min-h-screen flex-col items-center gap-2 bg-[#65CCB8]"></div>
     );
   }
 
@@ -25,7 +25,7 @@ export default async function Home() {
     .filter((r) => repoIds.includes(r.id));
 
   return (
-    <main className="flex min-h-screen flex-col bg-[#1c2128] px-4 text-white">
+    <main className="flex min-h-screen flex-col bg-[#65CCB8] px-4 text-[#F2F2F2]">
       <div className="flex flex-col gap-12 py-16">
         <h1 className="text-5xl font-extrabold tracking-tight  sm:text-[5rem]">
           Github <span className="text-[#adbac7]">T3</span> App

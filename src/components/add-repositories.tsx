@@ -26,7 +26,7 @@ export default function AddRepositories({
         }}
         className="flex h-6 w-6 items-center justify-center rounded-full border border-[#adbac7]"
       >
-        <Plus className="h-4 w-4  text-white" />
+        <Plus className="h-4 w-4 text-[#F2F2F2]" />
       </button>
     </div>
   );

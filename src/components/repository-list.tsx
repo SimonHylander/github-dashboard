@@ -15,7 +15,7 @@ export default function RepositoryList({ groups }: { groups: Repository[] }) {
   console.log(search);
 
   return (
-    <ScrollArea className="flex h-[420px] w-[25%] flex-col gap-4 rounded-md border border-[#444c56] bg-[#22272e] p-4 text-white">
+    <ScrollArea className="flex h-[420px] w-[25%] flex-col gap-4 rounded-md border border-[#444c56] bg-[#22272e] p-4 text-[#F2F2F2]">
       <Input
         onChange={(e) => setSearch(e.target.value)}
         className="mb-4 border border-[#444c56]"

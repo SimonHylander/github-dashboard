@@ -1,17 +1,26 @@
 import Link from "next/link";
 import { getServerAuthSession } from "~/server/auth";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/ui/dropdown-menu";
+
 async function TopNavigation() {
   const session = await getServerAuthSession();
 
   return (
-    <nav className="bg-[#2d333b]">
+    <nav className="bg-[#65CCB8] font-semibold text-[#182628]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <svg
-                className="h-8 w-8 text-white"
+                className="h-8 w-8 text-[#F2F2F2]"
                 viewBox="0 0 16 16"
                 fill="currentColor"
                 xmlns="http://www.w3.org/2000/svg"
@@ -26,117 +35,66 @@ async function TopNavigation() {
               <div className="ml-10 flex items-baseline space-x-4">
                 <a
                   href="#"
-                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  className="rounded-md px-3 py-2 text-sm hover:text-[#F2F2F2]"
                 >
                   Dashboard
                 </a>
                 <a
                   href="#"
-                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  className="rounded-md px-3 py-2 text-sm hover:text-[#F2F2F2]"
                 >
                   Repositories
                 </a>
                 <a
                   href="#"
-                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                  className="rounded-md px-3 py-2 text-sm  hover:text-[#F2F2F2]"
                 >
                   Pull Requests
                 </a>
-                <a
-                  href="#"
-                  className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-                >
-                  Issues
-                </a>
               </div>
             </div>
           </div>
 
-          <div className="hidden md:block">
-            <div className="ml-4 flex items-center md:ml-6">
-              <button
-                className="rounded-full border-2 border-transparent p-1 text-gray-400 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
-                aria-label="Notifications"
-              >
-                <svg
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 15h.01M12 6h.01M12 10h.01M12 14h.01M12 18h.01M6 18h2M6 21h12a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-              </button>
-
-              <div className="relative ml-3">
-                <div>
-                  {session?.user ? (
-                    <button
-                      className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                      id="user-menu"
-                      aria-haspopup="true"
-                    >
-                      <span className="sr-only">Open user menu</span>
-                      <img
-                        className="h-8 w-8 rounded-full"
-                        src="https://avatars.githubusercontent.com/u/1?v=4"
-                        alt=""
-                      />
-                    </button>
-                  ) : (
-                    <Link
-                      href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                      className="ml-auto flex-shrink-0 rounded-full border-2 border-transparent p-1 text-gray-400 hover:text-white  focus:outline-none"
-                    >
-                      Sign in
-                    </Link>
-                  )}
+          <DropdownMenu>
+            <div className="hidden md:block">
+              <div className="ml-4 flex items-center md:ml-6">
+                <div className="relative ml-3">
+                  <div>
+                    {session?.user ? (
+                      <DropdownMenuTrigger className="flex max-w-xs items-center rounded-full bg-gray-800 text-sm text-[#F2F2F2] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                        <span className="sr-only">Open user menu</span>
+                        <img
+                          className="h-8 w-8 rounded-full"
+                          src="https://avatars.githubusercontent.com/u/1?v=4"
+                          alt=""
+                        />
+                      </DropdownMenuTrigger>
+                    ) : (
+                      <Link
+                        href={
+                          session ? "/api/auth/signout" : "/api/auth/signin"
+                        }
+                        className="ml-auto flex-shrink-0 rounded-full border-2 border-transparent p-1 hover:text-[#F2F2F2]  focus:outline-none"
+                      >
+                        Sign in
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="-mr-2 flex md:hidden">
-            <button
-              className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-              aria-expanded="false"
-            >
-              <span className="sr-only">Open main menu</span>
-              <svg
-                className="block h-6 w-6"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-              <svg
-                className="hidden h-6 w-6"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Billing</DropdownMenuItem>
+              <DropdownMenuItem>Team</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link href="/api/auth/signout">Sign out</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
@@ -144,26 +102,17 @@ async function TopNavigation() {
         <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
           <a
             href="#"
-            className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+            className="block rounded-md px-3 py-2 text-base hover:text-[#65CCB8]"
           >
             Dashboard
           </a>
-          <a
-            href="#"
-            className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-          >
+          <a href="#" className="block rounded-md px-3 py-2 text-base   ">
             Repositories
           </a>
-          <a
-            href="#"
-            className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-          >
+          <a href="#" className="block rounded-md px-3 py-2 text-base   ">
             Pull Requests
           </a>
-          <a
-            href="#"
-            className="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
-          >
+          <a href="#" className="block rounded-md px-3 py-2 text-base ">
             Issues
           </a>
         </div>
@@ -178,10 +127,10 @@ async function TopNavigation() {
               />
             </div>
             <div className="ml-3">
-              <div className="text-base font-medium leading-none text-white">
+              <div className="text-base  leading-none text-[#F2F2F2]">
                 {session?.user.name}
               </div>
-              <div className="text-sm font-medium leading-none text-gray-400">
+              <div className="text-sm  leading-none ">
                 {session?.user.email}
               </div>
             </div>
@@ -205,29 +154,28 @@ async function TopNavigation() {
             ) : (
               <Link
                 href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                className="ml-auto flex-shrink-0 rounded-full border-2 border-transparent bg-gray-800 p-1 text-gray-400 hover:text-white focus:bg-gray-700 focus:text-white focus:outline-none"
+                className="ml-auto flex-shrink-0 rounded-full border-2 border-transparent bg-gray-800 p-1  hover:text-[#F2F2F2] focus:bg-gray-700 focus:text-[#F2F2F2] focus:outline-none"
               >
                 Sign in
               </Link>
             )}
           </div>
-
           <div className="mt-3 space-y-1 px-2">
             <a
               href="#"
-              className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+              className="block rounded-md px-3 py-2 text-base   hover:bg-gray-700 hover:text-[#F2F2F2]"
             >
               Your Profile
             </a>
             <a
               href="#"
-              className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+              className="block rounded-md px-3 py-2 text-base  hover:bg-gray-700 hover:text-[#F2F2F2]"
             >
               Settings
             </a>
             <a
               href="#"
-              className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
+              className="block rounded-md px-3 py-2 text-base  hover:bg-gray-700 hover:text-[#F2F2F2]"
             >
               Sign out
             </a>
