@@ -27,8 +27,8 @@ export default async function Home() {
   return (
     <main className="flex min-h-screen flex-col bg-[#65CCB8] px-4 text-[#F2F2F2]">
       <div className="flex flex-col gap-12 py-16">
-        <h1 className="text-5xl font-extrabold tracking-tight  sm:text-[5rem]">
-          Github <span className="text-[#adbac7]">T3</span> App
+        <h1 className="text-5xl font-extrabold tracking-tight text-slate-800 sm:text-[5rem]">
+          Github <span className="text-[#3B945E]">T3</span> App
         </h1>
 
         <div className="flex gap-4">

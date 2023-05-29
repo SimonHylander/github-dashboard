@@ -1,17 +1,18 @@
-"use client";
+import SignInButton from "../_components/auth/sign-in-button";
+import { getServerAuthSession } from "~/server/auth";
 
-import { signIn } from "next-auth/react";
+import { redirect } from "next/navigation";
 
-export default function SignIn() {
+export default async function SignIn() {
+  const session = await getServerAuthSession();
+
+  if (session && session.user) {
+    redirect("/");
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-[#65CCB8] via-[#65CCB8] to-[#65CCB8] p-4 text-[#182628]">
-      <button
-        type="button"
-        className="text-2xl font-bold"
-        onClick={() => signIn("github")}
-      >
-        Signin with Github
-      </button>
+    <div className="flex min-h-screen items-center justify-center bg-[#65CCB8] p-4 text-[#182628]">
+      <SignInButton />
     </div>
   );
 }

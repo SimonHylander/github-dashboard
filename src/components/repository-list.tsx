@@ -15,7 +15,7 @@ export default function RepositoryList({ groups }: { groups: Repository[] }) {
   console.log(search);
 
   return (
-    <ScrollArea className="flex h-[420px] w-[25%] flex-col gap-4 rounded-md border border-[#444c56] bg-[#22272e] p-4 text-[#F2F2F2]">
+    <ScrollArea className="flex h-[420px] w-[25%] flex-col gap-4 rounded-md border border-[#3B945E] bg-slate-800 p-4 text-white">
       <Input
         onChange={(e) => setSearch(e.target.value)}
         className="mb-4 border border-[#444c56]"
@@ -33,7 +33,7 @@ export default function RepositoryList({ groups }: { groups: Repository[] }) {
               style={{ height: 20 }}
             />
 
-            <h3 className="text-2xl font-bold text-[#adbac7]">{group.owner}</h3>
+            <h3 className="text-2xl font-bold">{group.owner}</h3>
           </div>
 
           <div className="flex flex-col">
@@ -50,7 +50,7 @@ export default function RepositoryList({ groups }: { groups: Repository[] }) {
                   key={i}
                   href={repository.html_url}
                   target="_blank"
-                  className="text-xl font-semibold"
+                  className="text-xl font-semibold text-slate-400"
                 >
                   {repository.name}
                 </Link>

@@ -14,7 +14,7 @@ async function TopNavigation() {
   const session = await getServerAuthSession();
 
   return (
-    <nav className="bg-[#65CCB8] font-semibold text-[#182628]">
+    <nav className="bg-[#65CCB8] font-semibold text-slate-800">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
@@ -33,24 +33,24 @@ async function TopNavigation() {
             </div>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-                <a
-                  href="#"
+                <Link
+                  href="/"
                   className="rounded-md px-3 py-2 text-sm hover:text-[#F2F2F2]"
                 >
                   Dashboard
-                </a>
-                <a
-                  href="#"
+                </Link>
+                <Link
+                  href="/"
                   className="rounded-md px-3 py-2 text-sm hover:text-[#F2F2F2]"
                 >
                   Repositories
-                </a>
-                <a
-                  href="#"
+                </Link>
+                <Link
+                  href="/"
                   className="rounded-md px-3 py-2 text-sm  hover:text-[#F2F2F2]"
                 >
                   Pull Requests
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -71,10 +71,8 @@ async function TopNavigation() {
                       </DropdownMenuTrigger>
                     ) : (
                       <Link
-                        href={
-                          session ? "/api/auth/signout" : "/api/auth/signin"
-                        }
-                        className="ml-auto flex-shrink-0 rounded-full border-2 border-transparent p-1 hover:text-[#F2F2F2]  focus:outline-none"
+                        href={session ? "/signout" : "/signin"}
+                        className="ml-auto flex-shrink-0 rounded-full border-2 border-transparent  p-1  hover:text-[#F2F2F2]"
                       >
                         Sign in
                       </Link>
@@ -100,21 +98,24 @@ async function TopNavigation() {
 
       <div className="md:hidden">
         <div className="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-          <a
-            href="#"
-            className="block rounded-md px-3 py-2 text-base hover:text-[#65CCB8]"
+          <Link
+            href="/"
+            className="rounded-md px-3 py-2 text-sm hover:text-[#F2F2F2]"
           >
             Dashboard
-          </a>
-          <a href="#" className="block rounded-md px-3 py-2 text-base   ">
+          </Link>
+          <Link
+            href="/"
+            className="rounded-md px-3 py-2 text-sm hover:text-[#F2F2F2]"
+          >
             Repositories
-          </a>
-          <a href="#" className="block rounded-md px-3 py-2 text-base   ">
+          </Link>
+          <Link
+            href="/"
+            className="rounded-md px-3 py-2 text-sm  hover:text-[#F2F2F2]"
+          >
             Pull Requests
-          </a>
-          <a href="#" className="block rounded-md px-3 py-2 text-base ">
-            Issues
-          </a>
+          </Link>
         </div>
 
         <div className="border-t border-gray-700 pb-3 pt-4">
@@ -153,32 +154,32 @@ async function TopNavigation() {
               </button>
             ) : (
               <Link
-                href={session ? "/api/auth/signout" : "/api/auth/signin"}
-                className="ml-auto flex-shrink-0 rounded-full border-2 border-transparent bg-gray-800 p-1  hover:text-[#F2F2F2] focus:bg-gray-700 focus:text-[#F2F2F2] focus:outline-none"
+                href={session ? "/signout" : "/signin"}
+                className="ml-auto flex-shrink-0 rounded-full border-2 border-transparent  p-1  hover:text-[#F2F2F2]"
               >
                 Sign in
               </Link>
             )}
           </div>
           <div className="mt-3 space-y-1 px-2">
-            <a
+            <Link
               href="#"
               className="block rounded-md px-3 py-2 text-base   hover:bg-gray-700 hover:text-[#F2F2F2]"
             >
               Your Profile
-            </a>
-            <a
+            </Link>
+            <Link
               href="#"
               className="block rounded-md px-3 py-2 text-base  hover:bg-gray-700 hover:text-[#F2F2F2]"
             >
               Settings
-            </a>
-            <a
+            </Link>
+            <Link
               href="#"
               className="block rounded-md px-3 py-2 text-base  hover:bg-gray-700 hover:text-[#F2F2F2]"
             >
               Sign out
-            </a>
+            </Link>
           </div>
         </div>
       </div>

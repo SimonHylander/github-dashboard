@@ -24,9 +24,9 @@ export default function AddRepositories({
             router.refresh();
           });
         }}
-        className="flex h-6 w-6 items-center justify-center rounded-full border border-[#adbac7]"
+        className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-400"
       >
-        <Plus className="h-4 w-4 text-[#F2F2F2]" />
+        <Plus className="h-4 w-4 text-slate-400" />
       </button>
     </div>
   );
