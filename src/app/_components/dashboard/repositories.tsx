@@ -8,17 +8,6 @@ import autoAnimate from "@formkit/auto-animate";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "~/components/button";
 
-import { Plus } from "react-feather";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/ui/dialog";
-
 import {
   Form,
   FormControl,
@@ -29,35 +18,17 @@ import {
   FormMessage,
 } from "~/ui/form";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/ui/dropdown-menu";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/ui/select";
 import { useZodForm } from "~/utils/form";
 import { api } from "~/trpc/client";
+import { Input } from "~/ui/input";
+import { z } from "zod";
+import { bookmarkSchema } from "~/schema/bookmark-schema";
 
 export const Repositories = async ({
   repositories,
 }: {
   repositories: GithubRepository[];
 }) => {
-  const [show, setShow] = useState(false);
-
-  const [open, setOpen] = useState(false);
-  const [product, setProduct] = useState<string>();
-
   const parent = useRef(null);
 
   useEffect(() => {
@@ -84,44 +55,14 @@ export const Repositories = async ({
           <h2 className="text-2xl font-bold">{repository.name}</h2>
         </Link>
       ))}
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger className="transition-color flex flex-col items-center justify-center gap-4 rounded-lg border-2 border-gray-500 bg-slate-500 p-4 duration-200 ">
-          <Plus />
-        </DialogTrigger>
-        <DialogContent className="bg-slate-800 text-white">
-          <DialogHeader>
-            <DialogTitle>
-              {product ? "Edit bookmark" : "Add bookmark"}
-            </DialogTitle>
-            <DialogDescription>
-              {product ? "Edit the" : "Add a"} bookmark.
-            </DialogDescription>
-          </DialogHeader>
-
-          <BookmarkForm toggle={() => {
-            setOpen(false);
-
-            if (product) {
-              setProduct(undefined);
-            }
-          }}>
-          </BookmarkForm>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
 
-
-
-function BookmarkForm ({ toggle }: { toggle: () => void }) {
+function BookmarkForm({ toggle }: { toggle: () => void }) {
   const [productId, setProductId] = useState<string>("");
 
-  const { data: products } = api.product.list.useQuery(undefined, {
-    refetchOnWindowFocus: false,
-    retry: 1,
-  });
+  // const { data } = api.post.list.query();
 
   const form = useZodForm({
     schema: bookmarkSchema,
@@ -129,27 +70,19 @@ function BookmarkForm ({ toggle }: { toggle: () => void }) {
 
   const { errors } = form.formState;
 
-  const utils = api.useContext();
+  /* const utils = api.useContext();
 
-  const { data: plans } = api.plan.getByProductId.useQuery(
-    { productId },
-    {
-      refetchOnWindowFocus: false,
-      retry: 1,
-      enabled: !!productId,
-    }
-  );
-
-  const { mutate: addProduct } = api.license.add.useMutation({
+  const { mutate: addProduct } = api.post.add.useMutation({
     onSuccess: () => {
       form.reset();
       toggle();
       utils.license.list.invalidate();
     },
-  });
+  }); */
 
-  const onSubmit = (data: z.infer<typeof licenseSchema>) => {
-    addProduct(data);
+  // const onSubmit = (data: z.infer<typeof licenseSchema>) => {
+  const onSubmit = () => {
+    // addProduct(data);
   };
 
   console.log(errors);
@@ -162,20 +95,20 @@ function BookmarkForm ({ toggle }: { toggle: () => void }) {
       >
         <FormField
           control={form.control}
-          name="identifier"
+          name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Identifier</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Identifier" {...field} />
+                <Input placeholder="Name" {...field} />
               </FormControl>
-              <FormDescription>Your user identifier</FormDescription>
+              <FormDescription>Your name</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <FormItem>
+        {/* <FormItem>
           <FormLabel>Product</FormLabel>
           <FormControl>
             <Select onValueChange={(e) => setProductId(e)}>
@@ -193,9 +126,9 @@ function BookmarkForm ({ toggle }: { toggle: () => void }) {
             </Select>
           </FormControl>
           <FormMessage />
-        </FormItem>
+        </FormItem> */}
 
-        <FormItem>
+        {/* <FormItem>
           <FormLabel>Plan</FormLabel>
           <FormControl>
             <Select onValueChange={(planId) => form.setValue("planId", planId)}>
@@ -213,9 +146,10 @@ function BookmarkForm ({ toggle }: { toggle: () => void }) {
             </Select>
           </FormControl>
           <FormMessage />
-        </FormItem>
+        </FormItem> */}
 
         <Button type="submit">Save</Button>
       </form>
     </Form>
+  );
 }
