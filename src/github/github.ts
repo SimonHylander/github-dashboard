@@ -84,6 +84,7 @@ export type Repository = {
   owner: string;
   ownerAvatar: string;
   repositories: GithubRepository[];
+  pages: number;
 };
 
 export async function getUser(accessToken: string) {
@@ -121,11 +122,7 @@ async function fetchRepositories(
   const promises: Promise<GithubRepository[]>[] = [userRepos];
 
   orgs.forEach((org) => {
-    promises.push(
-      fetch(org.repos_url, fetchConfig(accessToken))
-        .then((res) => res.json() as Promise<GithubRepository[]>)
-        .catch((err) => [])
-    );
+    promises.push(getOrganizationRepositories(org, accessToken));
   });
 
   return Promise.all(promises).then((values) => {
@@ -166,11 +163,34 @@ async function fetchRepositories(
         owner: key,
         ownerAvatar: value.avatar,
         repositories: value.repos,
+        pages: 0,
       });
     });
 
     return collectedRepos;
   });
+}
+
+function getOrganizationRepositories(
+  org: GitHubOrganization,
+  accessToken: string
+) {
+  const url = `${org.repos_url}?sort=created`;
+
+  return fetch(url, fetchConfig(accessToken))
+    .then((res) => {
+      if (res.headers.has("link")) {
+        const link = res.headers.get("link");
+
+        if (link?.includes('rel="next"')) {
+          console.log("next page");
+          console.log(link);
+        }
+      }
+
+      return res.json() as Promise<GithubRepository[]>;
+    })
+    .catch((err) => []);
 }
 
 function fetchConfig(accessToken: string) {
